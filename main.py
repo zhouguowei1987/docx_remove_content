@@ -72,37 +72,42 @@ def doc2docx(in_file, out_file):
             print(e)
     except Exception as e:
         print(e)
-    exit(1)
 
 
-word_dir = "G:\\www.diyifanwen.com\\导游词\\北京导游词"
-finish_dir = "G:\\www.diyifanwen.com\\导游词\\北京导游词_finish"
-doc2docx_dir = "G:\\www.diyifanwen.com\\导游词\\北京导游词_doc2docx"
+AllCategory = ["导游词"]
 
 if __name__ == '__main__':
-    if not os.path.exists(finish_dir):
-        os.mkdir(finish_dir)
+    for category in AllCategory:
+        category_path = "G:\\www.diyifanwen.com\\" + category
+        child_category_dirs = sorted(os.listdir(category_path))
+        for child_category in child_category_dirs:
+            word_dir = category_path + "\\" + child_category
+            finish_dir = "G:\\final.diyifanwen.com\\" + category + "\\" + child_category + "_finish"
+            doc2docx_dir = "G:\\final.diyifanwen.com\\" + category + "\\" + child_category + "_doc2docx"
 
-    if not os.path.exists(doc2docx_dir):
-        os.mkdir(doc2docx_dir)
+            if not os.path.exists(finish_dir):
+                os.makedirs(finish_dir)
 
-    files = sorted(os.listdir(word_dir))
-    for file in files:
-        if os.path.splitext(file)[1] in [".doc", ".docx"]:
-            print(file)
-            if os.path.splitext(file)[1] == ".docx":
-                # 将文件复制到doc2docx_dir目录
-                print("复制文件")
-                shutil.copyfile(word_dir + "\\" + file, doc2docx_dir + "\\" + file)
-            elif os.path.splitext(file)[1] == ".doc":
-                # 将doc文件转化为docx文件
-                print("转化文件")
-                doc2docx(word_dir + "\\" + file, doc2docx_dir + "\\" + os.path.splitext(file)[0] + ".docx")
-                time.sleep(3)
-            # 去除word页眉和页脚
-            doc2docx_file = doc2docx_dir + "\\" + os.path.splitext(file)[0] + ".docx"
-            finish_doc = finish_dir + "\\" + os.path.splitext(file)[0] + ".docx"
+            if not os.path.exists(doc2docx_dir):
+                os.makedirs(doc2docx_dir)
 
-            word_pages = get_word_pages(doc2docx_file)
-            if 3 <= word_pages <= 60:
-                docx_remove_content(doc2docx_file, finish_doc)
+            files = sorted(os.listdir(word_dir))
+            for file in files:
+                if os.path.splitext(file)[1] in [".doc", ".docx"]:
+                    print(file)
+                    if os.path.splitext(file)[1] == ".docx":
+                        # 将文件复制到doc2docx_dir目录
+                        print("复制文件")
+                        shutil.copyfile(word_dir + "\\" + file, doc2docx_dir + "\\" + file)
+                    elif os.path.splitext(file)[1] == ".doc":
+                        # 将doc文件转化为docx文件
+                        print("转化文件")
+                        doc2docx(word_dir + "\\" + file, doc2docx_dir + "\\" + os.path.splitext(file)[0] + ".docx")
+                        time.sleep(3)
+                    # 去除word页眉和页脚
+                    doc2docx_file = doc2docx_dir + "\\" + os.path.splitext(file)[0] + ".docx"
+                    finish_doc = finish_dir + "\\" + os.path.splitext(file)[0] + ".docx"
+
+                    word_pages = get_word_pages(doc2docx_file)
+                    if 3 <= word_pages <= 60:
+                        docx_remove_content(doc2docx_file, finish_doc)
