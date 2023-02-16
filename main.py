@@ -100,5 +100,7 @@ if __name__ == '__main__':
             # 去除word页眉和页脚
             doc2docx_file = doc2docx_dir + "\\" + os.path.splitext(file)[0] + ".docx"
             finish_doc = finish_dir + "\\" + os.path.splitext(file)[0] + ".docx"
-            if get_word_pages(doc2docx_file) >= 3:
+
+            word_pages = get_word_pages(doc2docx_file)
+            if 3 <= word_pages <= 10:
                 docx_remove_content(doc2docx_file, finish_doc)
