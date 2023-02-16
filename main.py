@@ -68,14 +68,16 @@ def doc2docx(in_file, out_file):
             doc.Close()
             word.Quit()
         except Exception as e:
+            print(1111)
             print(e)
     except Exception as e:
         print(e)
+    exit(1)
 
 
-word_dir = "G:\\www.diyifanwen.com\\合同范本\\承揽合同"
-finish_dir = "G:\\www.diyifanwen.com\\合同范本\\承揽合同_finish"
-doc2docx_dir = "G:\\www.diyifanwen.com\\合同范本\\承揽合同_doc2docx"
+word_dir = "G:\\www.diyifanwen.com\\导游词\\北京导游词"
+finish_dir = "G:\\www.diyifanwen.com\\导游词\\北京导游词_finish"
+doc2docx_dir = "G:\\www.diyifanwen.com\\导游词\\北京导游词_doc2docx"
 
 if __name__ == '__main__':
     if not os.path.exists(finish_dir):
