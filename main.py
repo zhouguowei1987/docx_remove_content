@@ -102,5 +102,5 @@ if __name__ == '__main__':
             finish_doc = finish_dir + "\\" + os.path.splitext(file)[0] + ".docx"
 
             word_pages = get_word_pages(doc2docx_file)
-            if 3 <= word_pages <= 10:
+            if 3 <= word_pages <= 60:
                 docx_remove_content(doc2docx_file, finish_doc)
