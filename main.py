@@ -110,7 +110,7 @@ def doc2docx(in_file, out_file):
         print(e)
 
 
-AllCategory = ["学生评语"]
+AllCategory = ["工作报告"]
 
 if __name__ == '__main__':
     for category in AllCategory:
@@ -144,9 +144,10 @@ if __name__ == '__main__':
                             print("转化文件")
                             doc2docx(word_dir + "\\" + file, doc2docx_dir + "\\" + os.path.splitext(file)[0] + ".docx")
 
-                    # 去除word内容
-                    docx_remove_content(doc2docx_file, finish_file)
-                    # 删除页眉页脚
-                    remove_header_footer(finish_file)
-                    # 改变文档字体
-                    change_word_font(finish_file)
+                    if not os.path.exists(finish_file):
+                        # 去除word内容
+                        docx_remove_content(doc2docx_file, finish_file)
+                        # 删除页眉页脚
+                        remove_header_footer(finish_file)
+                        # 改变文档字体
+                        change_word_font(finish_file)
