@@ -110,7 +110,7 @@ def doc2docx(in_file, out_file):
         print(e)
 
 
-AllCategory = ["工作报告"]
+AllCategory = ["学生评语", "礼仪", "工作报告"]
 
 if __name__ == '__main__':
     for category in AllCategory:
@@ -118,21 +118,21 @@ if __name__ == '__main__':
         child_category_dirs = sorted(os.listdir(category_path))
         for child_category in child_category_dirs:
             word_dir = category_path + "\\" + child_category
-            finish_dir = "G:\\final.diyifanwen.com\\" + category + "\\" + child_category + "_finish"
-            doc2docx_dir = "G:\\final.diyifanwen.com\\" + category + "\\" + child_category + "_doc2docx"
-
-            if not os.path.exists(finish_dir):
-                os.makedirs(finish_dir)
-
-            if not os.path.exists(doc2docx_dir):
-                os.makedirs(doc2docx_dir)
 
             files = sorted(os.listdir(word_dir))
             for file in files:
                 if os.path.splitext(file)[1] in [".doc", ".docx"]:
                     print(file)
+
+                    finish_dir = "G:\\final.diyifanwen.com\\" + category + "\\" + child_category + "_finish"
+                    if not os.path.exists(finish_dir):
+                        os.makedirs(finish_dir)
                     finish_file = finish_dir + "\\" + os.path.splitext(file)[0] + ".docx"
                     if not os.path.exists(finish_file):
+
+                        doc2docx_dir = "G:\\final.diyifanwen.com\\" + category + "\\" + child_category + "_doc2docx"
+                        if not os.path.exists(doc2docx_dir):
+                            os.makedirs(doc2docx_dir)
                         doc2docx_file = doc2docx_dir + "\\" + os.path.splitext(file)[0] + ".docx"
                         if not os.path.exists(doc2docx_file):
                             if os.path.splitext(file)[1] == ".docx":
