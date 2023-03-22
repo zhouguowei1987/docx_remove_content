@@ -144,7 +144,7 @@ if __name__ == '__main__':
                             print("转化文件")
                             doc2docx(word_dir + "\\" + file, doc2docx_dir + "\\" + os.path.splitext(file)[0] + ".docx")
 
-                    # 去除word页眉和页脚
+                    # 去除word内容
                     docx_remove_content(doc2docx_file, finish_file)
                     # 删除页眉页脚
                     remove_header_footer(finish_file)
