@@ -132,18 +132,17 @@ if __name__ == '__main__':
                 if os.path.splitext(file)[1] in [".doc", ".docx"]:
                     print(file)
                     doc2docx_file = doc2docx_dir + "\\" + os.path.splitext(file)[0] + ".docx"
-                    finish_file = finish_dir + "\\" + os.path.splitext(file)[0] + ".docx"
-                    if os.path.splitext(file)[1] == ".docx":
-                        if not os.path.exists(doc2docx_file):
+                    if not os.path.exists(doc2docx_file):
+                        if os.path.splitext(file)[1] == ".docx":
                             # 将文件复制到doc2docx_dir目录
                             print("复制文件")
                             shutil.copyfile(word_dir + "\\" + file, doc2docx_dir + "\\" + file)
-                    elif os.path.splitext(file)[1] == ".doc":
-                        if not os.path.exists(doc2docx_file):
+                        elif os.path.splitext(file)[1] == ".doc":
                             # 将doc文件转化为docx文件
                             print("转化文件")
                             doc2docx(word_dir + "\\" + file, doc2docx_dir + "\\" + os.path.splitext(file)[0] + ".docx")
 
+                    finish_file = finish_dir + "\\" + os.path.splitext(file)[0] + ".docx"
                     if not os.path.exists(finish_file):
                         # 去除word内容
                         docx_remove_content(doc2docx_file, finish_file)
