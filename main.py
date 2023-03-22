@@ -143,7 +143,6 @@ if __name__ == '__main__':
                             # 将doc文件转化为docx文件
                             print("转化文件")
                             doc2docx(word_dir + "\\" + file, doc2docx_dir + "\\" + os.path.splitext(file)[0] + ".docx")
-                            time.sleep(1)
 
                     # 去除word页眉和页脚
                     docx_remove_content(doc2docx_file, finish_file)
