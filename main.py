@@ -8,11 +8,12 @@ from win32com import client as wc
 import os
 import re
 import shutil
+import zipfile
 
 
 def docx_remove_content(doc, finish_doc):
     # 定义需要去除的内容
-    content_to_remove = '''【提示】本文档来源自第一范文网（https://www.diyifanwen.com），第一范文网是中国最大的范文网站，专注于提供各种优质工作学习办公文档，欢迎访问。
+    content_to_remove = '''【提示】本文档来源自第一范文网（https://www.51xiazai.cn），第一范文网是中国最大的范文网站，专注于提供各种优质工作学习办公文档，欢迎访问。
 微信搜索公众号“第一范文网”，关注后可方便查找下载各种文档。
 转发文档请保留以上标记，谢谢！'''
     # 打开doc文件
@@ -22,32 +23,32 @@ def docx_remove_content(doc, finish_doc):
         # 如果段落中包含需要去除的内容，使用正则表达式替换为空字符串
         if re.search(content_to_remove, para.text):
             para.text = re.sub(content_to_remove, '', para.text)
-        else:
-            doc_basename = os.path.basename(doc).split("】")[1]
-            doc_title_name = os.path.splitext(doc_basename)[0]
-
-            # 更改段落字体颜色，例如：爱校之星班主任评语
-            if doc_title_name == para.text:
-                for run in para.runs:
-                    run.font.bold = True
-                    run.font.underline = True
-                    run.font.size = Pt(20)
-                    run.font.color.rgb = RGBColor(255, 0, 0)
-                continue
-
-            # 删除带有篇数量的段落，例如：爱校之星班主任评语（精选25篇）
-            if doc_title_name + "（" in para.text:
-                p = para._element
-                p.getparent().remove(p)
-                para._p = para._element = None
-                continue
-
-            # 更改段落字体颜色，例如：爱校之星班主任评语 篇1
-            if doc_title_name + " 篇" in para.text:
-                for run in para.runs:
-                    run.font.bold = True
-                    run.font.size = Pt(15)
-                    run.font.color.rgb = RGBColor(255, 0, 0)
+        # else:
+        #     doc_basename = os.path.basename(doc).split("】")[1]
+        #     doc_title_name = os.path.splitext(doc_basename)[0]
+        #
+        #     # 更改段落字体颜色，例如：爱校之星班主任评语
+        #     if doc_title_name == para.text:
+        #         for run in para.runs:
+        #             run.font.bold = True
+        #             run.font.underline = True
+        #             run.font.size = Pt(20)
+        #             run.font.color.rgb = RGBColor(255, 0, 0)
+        #         continue
+        #
+        #     # 删除带有篇数量的段落，例如：爱校之星班主任评语（精选25篇）
+        #     if doc_title_name + "（" in para.text:
+        #         p = para._element
+        #         p.getparent().remove(p)
+        #         para._p = para._element = None
+        #         continue
+        #
+        #     # 更改段落字体颜色，例如：爱校之星班主任评语 篇1
+        #     if doc_title_name + " 篇" in para.text:
+        #         for run in para.runs:
+        #             run.font.bold = True
+        #             run.font.size = Pt(15)
+        #             run.font.color.rgb = RGBColor(255, 0, 0)
 
     document.save(finish_doc)
 
@@ -110,43 +111,78 @@ def doc2docx(in_file, out_file):
         print(e)
 
 
-AllCategory = ["学生评语", "礼仪", "工作报告"]
+def support_gbk(zip_file: zipfile):
+    name_to_info = zip_file.NameToInfo
+    # copy map first
+    for name, info in name_to_info.copy().items():
+        real_name = name.encode('cp437').decode('gbk')
+        if real_name != name:
+            info.filename = real_name
+            del name_to_info[name]
+            name_to_info[real_name] = info
+    return zip_file
+
+
+AllCategory = ["工作总结", "商业计划书", "竞聘述职", "教育教学", "个人简历", "节日庆典", "企业培训", "毕业答辩",
+               "工作计划", "企业宣传", "活动策划", "主题班会", "读书分享"]
 
 if __name__ == '__main__':
     for category in AllCategory:
-        category_path = "G:\\www.diyifanwen.com\\" + category
+        category_path = "G:\\www.pc6.com\\" + category
+        child_category_zips = sorted(os.listdir(category_path))
+        for zipFile in child_category_zips:
+            with support_gbk(zipfile.ZipFile(category_path + "\\" + zipFile, 'r')) as zf:  # 压缩文件位置
+                for file in zf.namelist():
+                    if ".pptx" in file:
+                        print(file)
+                        file_size = zf.getinfo(file).file_size
+                        new_path = "G:\\www.pc6.com\\" + category + "\\" + zipFile.split(".")[0] + ".pptx"
+                        if file_size > 0:
+                            # 是文件，通过open创建文件，写入数据
+                            with open(new_path, 'wb') as f:
+                                # zf.read 是读取压缩包里的文件内容
+                                f.write(zf.read(file))
+
+    exit(1)
+    for category in AllCategory:
+        category_path = "G:\\final.51xiazai.cn\\" + category
         child_category_dirs = sorted(os.listdir(category_path))
         for child_category in child_category_dirs:
             word_dir = category_path + "\\" + child_category
 
             files = sorted(os.listdir(word_dir))
             for file in files:
-                if os.path.splitext(file)[1] in [".doc", ".docx"]:
-                    print(file)
+                print(word_dir + "\\" + file)
 
-                    finish_dir = "G:\\final.diyifanwen.com\\" + category + "\\" + child_category + "_finish"
-                    if not os.path.exists(finish_dir):
-                        os.makedirs(finish_dir)
-                    finish_file = finish_dir + "\\" + os.path.splitext(file)[0] + ".docx"
-                    if not os.path.exists(finish_file):
+                os.rename(word_dir + "\\" + file, word_dir + "\\" + "【合同范文】" + file)
 
-                        doc2docx_dir = "G:\\final.diyifanwen.com\\" + category + "\\" + child_category + "_doc2docx"
-                        if not os.path.exists(doc2docx_dir):
-                            os.makedirs(doc2docx_dir)
-                        doc2docx_file = doc2docx_dir + "\\" + os.path.splitext(file)[0] + ".docx"
-                        if not os.path.exists(doc2docx_file):
-                            if os.path.splitext(file)[1] == ".docx":
-                                # 将文件复制到doc2docx_dir目录
-                                print("复制文件")
-                                shutil.copyfile(word_dir + "\\" + file, doc2docx_dir + "\\" + file)
-                            elif os.path.splitext(file)[1] == ".doc":
-                                # 将doc文件转化为docx文件
-                                print("转化文件")
-                                doc2docx(word_dir + "\\" + file, doc2docx_dir + "\\" + os.path.splitext(file)[0] + ".docx")
-
-                        # 去除word内容
-                        docx_remove_content(doc2docx_file, finish_file)
-                        # 删除页眉页脚
-                        remove_header_footer(finish_file)
-                        # 改变文档字体
-                        change_word_font(finish_file)
+                # if os.path.splitext(file)[1] in [".doc", ".docx"]:
+                #     print(file)
+                #
+                #     finish_dir = "G:\\final.51xiazai.cn\\" + category + "\\" + child_category + "_finish"
+                #     if not os.path.exists(finish_dir):
+                #         os.makedirs(finish_dir)
+                #     finish_file = finish_dir + "\\" + os.path.splitext(file)[0] + ".docx"
+                #
+                #     if not os.path.exists(finish_file):
+                #
+                #         doc2docx_dir = "G:\\final.51xiazai.cn\\" + category + "\\" + child_category + "_doc2docx"
+                #         if not os.path.exists(doc2docx_dir):
+                #             os.makedirs(doc2docx_dir)
+                #         doc2docx_file = doc2docx_dir + "\\" + os.path.splitext(file)[0] + ".docx"
+                #         if not os.path.exists(doc2docx_file):
+                #             if os.path.splitext(file)[1] == ".docx":
+                #                 # 将文件复制到doc2docx_dir目录
+                #                 print("复制文件")
+                #                 shutil.copyfile(word_dir + "\\" + file, doc2docx_dir + "\\" + file)
+                #             elif os.path.splitext(file)[1] == ".doc":
+                #                 # 将doc文件转化为docx文件
+                #                 print("转化文件")
+                #                 doc2docx(word_dir + "\\" + file, doc2docx_dir + "\\" + os.path.splitext(file)[0] + ".docx")
+                #
+                #         # 去除word内容
+                #         docx_remove_content(doc2docx_file, finish_file)
+                #         # 删除页眉页脚
+                #         remove_header_footer(finish_file)
+                #         # 改变文档字体
+                #         change_word_font(finish_file)
