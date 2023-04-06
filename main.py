@@ -123,66 +123,61 @@ def support_gbk(zip_file: zipfile):
     return zip_file
 
 
-AllCategory = ["工作总结", "商业计划书", "竞聘述职", "教育教学", "个人简历", "节日庆典", "企业培训", "毕业答辩",
-               "工作计划", "企业宣传", "活动策划", "主题班会", "读书分享"]
+AllCategory = ["word模板"]
 
 if __name__ == '__main__':
+    # for category in AllCategory:
+    #     category_path = "G:\\\www.ppt818.com\\" + category
+    #     child_category_zips = sorted(os.listdir(category_path))
+    #     for zipFile in child_category_zips:
+    #         if ".zip" in zipFile:
+    #             with support_gbk(zipfile.ZipFile(category_path + "\\" + zipFile, 'r')) as zf:  # 压缩文件位置
+    #                 for file in zf.namelist():
+    #                     if ".doc" in file:
+    #                         print(file)
+    #                         file_size = zf.getinfo(file).file_size
+    #                         new_path = "G:\\www.ppt818.com\\" + category + "\\" + zipFile.split(".")[0] + "." + file.split(".")[1]
+    #                         if file_size > 0:
+    #                             # 是文件，通过open创建文件，写入数据
+    #                             with open(new_path, 'wb') as f:
+    #                                 # zf.read 是读取压缩包里的文件内容
+    #                                 f.write(zf.read(file))
+    #
+    # exit(1)
+
+    # for category in AllCategory:
+    #     category_path = "G:\\www.pc6.com\\" + category
+    #     files = sorted(os.listdir(category_path))
+    #     for file in files:
+    #         print(category_path + "\\" + file)
+    #         os.rename(category_path + "\\" + file, "G:\\www.pc6.com\\" + "【" + category + "】" + file)
+    # for child_category in child_category_dirs:
+    #     word_dir = category_path + "\\" + child_category
+    #
+    #     files = sorted(os.listdir(child_category_dirs))
+    #     for file in files:
+    #         print(word_dir + "\\" + file)
+    #         exit(1)
+    #         os.rename(word_dir + "\\" + file, word_dir + "\\" + "【"+category+"】" + file)
+
     for category in AllCategory:
-        category_path = "G:\\www.pc6.com\\" + category
-        child_category_zips = sorted(os.listdir(category_path))
-        for zipFile in child_category_zips:
-            with support_gbk(zipfile.ZipFile(category_path + "\\" + zipFile, 'r')) as zf:  # 压缩文件位置
-                for file in zf.namelist():
-                    if ".pptx" in file:
-                        print(file)
-                        file_size = zf.getinfo(file).file_size
-                        new_path = "G:\\www.pc6.com\\" + category + "\\" + zipFile.split(".")[0] + ".pptx"
-                        if file_size > 0:
-                            # 是文件，通过open创建文件，写入数据
-                            with open(new_path, 'wb') as f:
-                                # zf.read 是读取压缩包里的文件内容
-                                f.write(zf.read(file))
+        category_path = "G:\\www.ppt818.com\\" + category
+        files = sorted(os.listdir(category_path))
+        for file in files:
+            if os.path.splitext(file)[1] in [".doc", ".docx"]:
+                print(file)
 
-    exit(1)
-    for category in AllCategory:
-        category_path = "G:\\final.51xiazai.cn\\" + category
-        child_category_dirs = sorted(os.listdir(category_path))
-        for child_category in child_category_dirs:
-            word_dir = category_path + "\\" + child_category
+                finish_file = category_path + "\\" + os.path.splitext(file)[0] + ".docx"
+                word_file = category_path + "\\" + file
 
-            files = sorted(os.listdir(word_dir))
-            for file in files:
-                print(word_dir + "\\" + file)
+                if not os.path.exists(finish_file):
+                    if os.path.splitext(file)[1] == ".doc":
+                        # 将doc文件转化为docx文件
+                        print("转化文件")
+                        doc2docx(word_file, finish_file)
+                        os.remove(word_file)
 
-                os.rename(word_dir + "\\" + file, word_dir + "\\" + "【合同范文】" + file)
-
-                # if os.path.splitext(file)[1] in [".doc", ".docx"]:
-                #     print(file)
-                #
-                #     finish_dir = "G:\\final.51xiazai.cn\\" + category + "\\" + child_category + "_finish"
-                #     if not os.path.exists(finish_dir):
-                #         os.makedirs(finish_dir)
-                #     finish_file = finish_dir + "\\" + os.path.splitext(file)[0] + ".docx"
-                #
-                #     if not os.path.exists(finish_file):
-                #
-                #         doc2docx_dir = "G:\\final.51xiazai.cn\\" + category + "\\" + child_category + "_doc2docx"
-                #         if not os.path.exists(doc2docx_dir):
-                #             os.makedirs(doc2docx_dir)
-                #         doc2docx_file = doc2docx_dir + "\\" + os.path.splitext(file)[0] + ".docx"
-                #         if not os.path.exists(doc2docx_file):
-                #             if os.path.splitext(file)[1] == ".docx":
-                #                 # 将文件复制到doc2docx_dir目录
-                #                 print("复制文件")
-                #                 shutil.copyfile(word_dir + "\\" + file, doc2docx_dir + "\\" + file)
-                #             elif os.path.splitext(file)[1] == ".doc":
-                #                 # 将doc文件转化为docx文件
-                #                 print("转化文件")
-                #                 doc2docx(word_dir + "\\" + file, doc2docx_dir + "\\" + os.path.splitext(file)[0] + ".docx")
-                #
-                #         # 去除word内容
-                #         docx_remove_content(doc2docx_file, finish_file)
-                #         # 删除页眉页脚
-                #         remove_header_footer(finish_file)
-                #         # 改变文档字体
-                #         change_word_font(finish_file)
+                # 删除页眉页脚
+                remove_header_footer(finish_file)
+                # 改变文档字体
+                change_word_font(finish_file)
