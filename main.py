@@ -123,27 +123,30 @@ def support_gbk(zip_file: zipfile):
     return zip_file
 
 
-AllCategory = ["word模板"]
+AllCategory = ["ppt模板"]
 
 if __name__ == '__main__':
-    # for category in AllCategory:
-    #     category_path = "G:\\\www.ppt818.com\\" + category
-    #     child_category_zips = sorted(os.listdir(category_path))
-    #     for zipFile in child_category_zips:
-    #         if ".zip" in zipFile:
-    #             with support_gbk(zipfile.ZipFile(category_path + "\\" + zipFile, 'r')) as zf:  # 压缩文件位置
-    #                 for file in zf.namelist():
-    #                     if ".doc" in file:
-    #                         print(file)
-    #                         file_size = zf.getinfo(file).file_size
-    #                         new_path = "G:\\www.ppt818.com\\" + category + "\\" + zipFile.split(".")[0] + "." + file.split(".")[1]
-    #                         if file_size > 0:
-    #                             # 是文件，通过open创建文件，写入数据
-    #                             with open(new_path, 'wb') as f:
-    #                                 # zf.read 是读取压缩包里的文件内容
-    #                                 f.write(zf.read(file))
-    #
-    # exit(1)
+    for category in AllCategory:
+        category_path = "G:\\www.ppt818.com\\" + category
+        child_category_zips = sorted(os.listdir(category_path))
+        for zipFile in child_category_zips:
+            print("=================================")
+            print(zipFile)
+            if ".zip" in zipFile:
+                with support_gbk(zipfile.ZipFile(category_path + "\\" + zipFile, 'r')) as zf:  # 压缩文件位置
+                    for file in zf.namelist():
+                        if ".ppt" in file:
+                            print(file)
+                            file_size = zf.getinfo(file).file_size
+                            new_path = "G:\\www.ppt818.com\\" + category + "\\" + zipFile.split(".")[0] + "." + file.split(".")[1]
+                            if file_size > 0:
+                                # 是文件，通过open创建文件，写入数据
+                                with open(new_path, 'wb') as f:
+                                    # zf.read 是读取压缩包里的文件内容
+                                    f.write(zf.read(file))
+                os.remove(category_path + "\\" + zipFile)
+
+    exit(1)
 
     # for category in AllCategory:
     #     category_path = "G:\\www.pc6.com\\" + category
@@ -160,24 +163,24 @@ if __name__ == '__main__':
     #         exit(1)
     #         os.rename(word_dir + "\\" + file, word_dir + "\\" + "【"+category+"】" + file)
 
-    for category in AllCategory:
-        category_path = "G:\\www.ppt818.com\\" + category
-        files = sorted(os.listdir(category_path))
-        for file in files:
-            if os.path.splitext(file)[1] in [".doc", ".docx"]:
-                print(file)
-
-                finish_file = category_path + "\\" + os.path.splitext(file)[0] + ".docx"
-                word_file = category_path + "\\" + file
-
-                if not os.path.exists(finish_file):
-                    if os.path.splitext(file)[1] == ".doc":
-                        # 将doc文件转化为docx文件
-                        print("转化文件")
-                        doc2docx(word_file, finish_file)
-                        os.remove(word_file)
-
-                # 删除页眉页脚
-                remove_header_footer(finish_file)
-                # 改变文档字体
-                change_word_font(finish_file)
+    # for category in AllCategory:
+    #     category_path = "G:\\www.ppt818.com\\" + category
+    #     files = sorted(os.listdir(category_path))
+    #     for file in files:
+    #         if os.path.splitext(file)[1] in [".doc", ".docx"]:
+    #             print(file)
+    #
+    #             finish_file = category_path + "\\" + os.path.splitext(file)[0] + ".docx"
+    #             word_file = category_path + "\\" + file
+    #
+    #             if not os.path.exists(finish_file):
+    #                 if os.path.splitext(file)[1] == ".doc":
+    #                     # 将doc文件转化为docx文件
+    #                     print("转化文件")
+    #                     doc2docx(word_file, finish_file)
+    #                     os.remove(word_file)
+    #
+    #             # 删除页眉页脚
+    #             remove_header_footer(finish_file)
+    #             # 改变文档字体
+    #             change_word_font(finish_file)
